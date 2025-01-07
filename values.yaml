@@ -1,0 +1,31 @@
+# Значения для деплоймента по умолчанию
+
+container:
+  image: nginx:latest                 #
+  appPort:                            #
+  probePort:                          #
+  readinessDelaySeconds: 15           #
+  readinessPeriodSeconds: 10          #
+  livenessDelaySeconds: 15            #
+  livenessPeriodSeconds: 10           #
+  
+
+# Лимиты и запросы ресурсов для контейнеров
+resources:
+  cpuLimits: 400m                     # Повышенный лимит 400m CPU для первых запросов приложения 
+  memoryLimits: 128Mi                 # Лимит использования памяти
+  cpuRequests: 100m                   # Запрос на резервирование CPU
+  memoryRequests: 128Mi               # Запрос на резервирование памяти
+
+# Автоскейлинг для деплоймента
+hpa:
+  minReplicas:  2                     # Мин.  количество реплик     
+  maxReplicas:  4                     # Макс. количество реплик
+  targetCPU:    80                    # Значение утилизации CPU, при достижении которого начнется запуск новых реплик
+  targetMemory: 80                    # Значение утилизации памяти, при достижении которого начнется запуск новых реплик
+
+# Значения для сервиса
+service:
+  type: LoadBalancer                  # Тип сервиса
+  port: 6789                          # Порт сервиса
+  protocol: TCP                       # Протокол сервиса
