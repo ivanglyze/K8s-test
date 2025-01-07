@@ -1,0 +1,50 @@
+apiVersion : apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}-web-app
+  labels:
+    app : {{ .Release.Name }}-deployment
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      project: {{ .Release.Name }}
+  template:
+    metadata:
+      labels:
+        project: {{ .Release.Name }}   
+    affinity:
+      podAntiAffinity:                                   # Отказоустойчивость и высокая доступность
+        preferredDuringSchedulingIgnoredDuringExecution: 
+        - weight: 5
+          podAffinityTerm:
+            labelSelector:
+              matchExpressions:
+              - key: app
+                operator: In
+                values:
+              - {{ .Release.Name }}-web-app
+            topologyKey: kubernetes.io/zone              # Распределение подов по зонам
+    spec:
+      containers:
+        - name : {{ .Release.Name }}-container
+          image: {{ .Values.container.image }}
+          resources:
+            limits:
+              cpu:
+              memory:
+            requests:
+              cpu:
+              memory:
+          livenessProbe:
+            tcpSocket:
+              port: 
+            initialDelaySeconds: 
+            periodSeconds: 
+            initialDelaySeconds: 
+            periodSeconds: 
+          readinessProbe:
+            tcpSocket:
+              port: 
+            initialDelaySeconds: 
+            periodSeconds: 
