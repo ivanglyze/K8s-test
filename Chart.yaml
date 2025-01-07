@@ -1,0 +1,15 @@
+apiVersion: v2
+name: web-app
+description: A Helm chart for a web app
+type: application
+version: 0.1.0
+appVersion: "1.0"
+
+keywords:
+  - webapp
+  - ivanglyz
+  - nginx
+
+maintainers:
+  - name:  IvanGlyz
+    email: ivanglyze@gmail.com
