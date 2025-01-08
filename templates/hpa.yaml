@@ -1,7 +1,7 @@
 apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
-  name: {{ Release.Name . }}-app-hpa
+  name: {{ Release.Name }}-app-hpa
   labels:
     app  : {{ .Release.Name }}-hpa
     env  : test
@@ -10,7 +10,7 @@ spec:
   scaleTargetRef:
     apiVersion: apps/v1
     kind: Deployment
-    name: {{ Release.Name . }}-web-app
+    name: {{ Release.Name }}-web-app
   minReplicas: {{ .Values.hpa.minReplicas }}
   maxReplicas: {{ .Values.hpa.maxReplicas }}
   metrics:
@@ -19,10 +19,10 @@ spec:
         name: cpu
         target:
           type: Utilization
-          averageUtilization: {{ .Values.autoscaling.targetCPU }}
+          averageUtilization: {{ .Values.hpa.targetCPU }}
     - type: Resource
       resource:
         name: memory
         target:
           type: Utilization
-          averageUtilization: {{ .Values.autoscaling.targetMemory }}
+          averageUtilization: {{ .Values.hpa.targetMemory }}
