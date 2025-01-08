@@ -1,1 +1,18 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ Release.Name }}-app-service
+  labels:
+    env  : test
+    owner: IvanGlyz
+spec:
+  type: {{ .Values.service.type }}
+  selector:
+    {{ .Release.Name }}
+  ports:
+    - name      : {{ .Values.service.type }}-listener
+      port      : {{ .Values.service.port }}          # Порт сервиса
+      targetPort: {{ .Values.container.appPort }}     # Порт контейнера
+      protocol  : {{ .Values.service.protocol }}
+
 
