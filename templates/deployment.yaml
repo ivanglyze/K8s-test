@@ -3,7 +3,9 @@ kind: Deployment
 metadata:
   name: {{ .Release.Name }}-web-app
   labels:
-    app : {{ .Release.Name }}-deployment
+    app  : {{ .Release.Name }}-deployment
+    env  : test
+    owner: IvanGlyz
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
@@ -14,37 +16,36 @@ spec:
       labels:
         project: {{ .Release.Name }}   
     affinity:
-      podAntiAffinity:                                   # Отказоустойчивость и высокая доступность
+      podAntiAffinity:                         
         preferredDuringSchedulingIgnoredDuringExecution: 
-        - weight: 5
+        - weight: 10
           podAffinityTerm:
             labelSelector:
               matchExpressions:
-              - key: app
-                operator: In
-                values:
-              - {{ .Release.Name }}-web-app
-            topologyKey: kubernetes.io/zone              # Распределение подов по зонам
+              - key: app                                 # Ключ antiAffinity 
+                operator: In                             # 
+                values:                                  #
+              - {{ .Release.Name }}-web-app              # И значение ключа, по которым antiAffinity будет определять куда предпочтительно не назначать поды
+            topologyKey: kubernetes.io/zone              # Топологический ключ для распределения подов по зонам
     spec:
       containers:
         - name : {{ .Release.Name }}-container
           image: {{ .Values.container.image }}
           resources:
             limits:
-              cpu:
-              memory:
+              cpu   : {{ .Values.resources.cpuLimits }}
+              memory: {{ .Values.resources.memoryLimits }}
             requests:
-              cpu:
-              memory:
+              cpu   : {{ .Values.resources.cpuRequests }}
+              memory: {{ .Values.resources.memoryRequests }}
           livenessProbe:
             tcpSocket:
-              port: 
-            initialDelaySeconds: 
-            periodSeconds: 
-            initialDelaySeconds: 
-            periodSeconds: 
+              port: {{ .Values.container.probePort }}
+            periodSeconds      : {{ .Values.container.livenessPeriodSeconds }}
+            initialDelaySeconds: {{ .Values.container.livenessDelaySeconds }}
           readinessProbe:
             tcpSocket:
-              port: 
-            initialDelaySeconds: 
-            periodSeconds: 
+              port: {{ .Values.container.probePort }}
+            periodSeconds      : {{ .Values.container.readinessPeriodSeconds }}
+            initialDelaySeconds: {{ .Values.container.readinessDelaySeconds }}
+
