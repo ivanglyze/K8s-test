@@ -2,7 +2,8 @@
 
 # Значения для контейнеров
 container:
-  image    : nginx:latest             # Образ приложения
+  image    : "nginx"                  # Образ приложения
+  tag      : "latest"                 # Версия образа
   appPort  : 80                       # Порт приложения
   probePort: 5678                     # Порт Probes
   readinessDelaySeconds : 12          # Период секунд между запуском контейнера и первой проверкой готовности принимать трафик
