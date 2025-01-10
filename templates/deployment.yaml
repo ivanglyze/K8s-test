@@ -14,23 +14,24 @@ spec:
   template:
     metadata:
       labels:
-        project: {{ .Release.Name }}   
-    affinity:
-      podAntiAffinity:                         
-        preferredDuringSchedulingIgnoredDuringExecution: 
-        - weight: 10
-          podAffinityTerm:
-            labelSelector:
-              matchExpressions:
-              - key: app                                 # Ключ antiAffinity 
-                operator: In                             # 
-                values:                                  #
-              - {{ .Release.Name }}-web-app              # И значение ключа, по которым antiAffinity будет определять куда предпочтительно не назначать поды
-            topologyKey: kubernetes.io/zone              # Топологический ключ для распределения подов по зонам
+        project: {{ .Release.Name }}
+    spec:    
+      affinity:
+        podAntiAffinity:                         
+          preferredDuringSchedulingIgnoredDuringExecution: 
+          - weight: 10
+            podAffinityTerm:
+              labelSelector:
+                matchExpressions:
+                - key: app                                 # Ключ antiAffinity 
+                  operator: In                             # 
+                  values:                                  #
+                - {{ .Release.Name }}-web-app              # И значение ключа, по которым antiAffinity будет определять куда предпочтительно не назначать поды
+              topologyKey: kubernetes.io/zone              # Топологический ключ для распределения подов по зонам
     spec:
       containers:
         - name : {{ .Release.Name }}-container
-          image: {{ .Values.container.image }}
+          image: "{{ .Values.container.image }}:{{ .Values.container.tag }}"
           resources:
             limits:
               cpu   : {{ .Values.resources.cpuLimits }}
@@ -48,4 +49,3 @@ spec:
               port: {{ .Values.container.probePort }}
             periodSeconds      : {{ .Values.container.readinessPeriodSeconds }}
             initialDelaySeconds: {{ .Values.container.readinessDelaySeconds }}
-
